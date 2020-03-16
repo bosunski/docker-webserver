@@ -17,7 +17,7 @@ RUN apk --update --no-cache add ca-certificates \
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # IMAGE ARGUMENTS WITH DEFAULTS.
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.4
 ARG ALPINE_VERSION=3.9
 ARG COMPOSER_HASH=48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb0dcd0615698a5cbe587c3f0fe57a54d8f5
 ARG NGINX_HTTP_PORT=80
@@ -34,6 +34,9 @@ RUN apk add --no-cache --update php-fpm@php \
     php@php \
     php-openssl@php \
     php-pdo@php \
+    php-bcmath@php \
+    php-pcntl@php \
+    php-posix@php \
     php-mysqlnd@php \
     php-pdo_mysql@php \
     php-mbstring@php \
