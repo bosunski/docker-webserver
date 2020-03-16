@@ -6,12 +6,6 @@ FROM nginx:1.17.5-alpine
 # MAINTAINER OF THE PACKAGE.
 LABEL maintainer="Olatunbosun Egberinde <bosunski@gmail.com>"
 
-# INSTALL SOME SYSTEM PACKAGES.
-RUN apk --update --no-cache add ca-certificates \
-	curl \
-    bash \
-    supervisor
-
 # trust this project public key to trust the packages.
 #ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 ADD https://dl.bintray.com/php-alpine/key/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
@@ -23,14 +17,17 @@ ARG COMPOSER_HASH=48e3236262b34d30969dca3c37281b3b4bbe3221bda826ac6a9a62d6444cdb
 ARG NGINX_HTTP_PORT=80
 ARG NGINX_HTTPS_PORT=443
 
-# CONFIGURE ALPINE REPOSITORIES AND PHP BUILD DIR.
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/main" > /etc/apk/repositories && \
+# INSTALL SOME SYSTEM PACKAGES.
+RUN apk --update --no-cache add ca-certificates \
+	curl \
+	supervisor \
+    bash && \
+	echo "http://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/main" > /etc/apk/repositories && \
     echo "http://dl-cdn.alpinelinux.org/alpine/v${ALPINE_VERSION}/community" >> /etc/apk/repositories && \
 #    echo "@php https://php.codecasts.rocks/v${ALPINE_VERSION}/php-${PHP_VERSION}" >> /etc/apk/repositories
-    echo "@php https://dl.bintray.com/php-alpine/v${ALPINE_VERSION}/php-${PHP_VERSION}" >> /etc/apk/repositories
+    echo "@php https://dl.bintray.com/php-alpine/v${ALPINE_VERSION}/php-${PHP_VERSION}" >> /etc/apk/repositories && \
 
-# INSTALL PHP AND SOME EXTENSIONS. SEE: https://github.com/codecasts/php-alpine
-RUN apk add --no-cache --update php-fpm@php \
+    apk add --no-cache --update php-fpm@php \
     php@php \
     php-openssl@php \
     php-pdo@php \
@@ -44,10 +41,10 @@ RUN apk add --no-cache --update php-fpm@php \
     php-zlib@php \
     php-json@php \
     php-xml@php && \
-    ln -s /usr/bin/php7 /usr/bin/php
+    ln -s /usr/bin/php7 /usr/bin/php && \
 
 # CONFIGURE WEB SERVER.
-RUN mkdir -p /var/www && \
+    mkdir -p /var/www && \
     mkdir -p /run/php && \
     mkdir -p /run/nginx && \
     mkdir -p /var/log/supervisor && \
@@ -55,10 +52,10 @@ RUN mkdir -p /var/www && \
     mkdir -p /etc/nginx/sites-available && \
     rm /etc/nginx/nginx.conf && \
     rm /etc/php7/php-fpm.d/www.conf && \
-    rm /etc/php7/php.ini
+    rm /etc/php7/php.ini && \
 
 # INSTALL COMPOSER.
-RUN curl -s https://getcomposer.org/installer | php && \
+    curl -s https://getcomposer.org/installer | php && \
  	mv composer.phar /usr/bin/composer && \
  	composer
 #RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
