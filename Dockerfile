@@ -34,6 +34,7 @@ RUN apk add --no-cache --update php-fpm@php \
     php@php \
     php-openssl@php \
     php-pdo@php \
+    php-iconv@php \
     php-bcmath@php \
     php-pcntl@php \
     php-posix@php \
